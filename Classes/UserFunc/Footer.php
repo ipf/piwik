@@ -1,30 +1,30 @@
 <?php
 /***************************************************************
-*  Copyright notice
-*
-*  (c) 2010 Kay Strobach (typo3@kay-strobach.de)
-*  (c) 2009 Ulrich Wuensche (wuensche@drwuensche.de),
-*
-*  All rights reserved
-*
-*  This script is free software; you can redistribute it and/or modify
-*  it under the terms of the GNU General Public License as published by
-*  the Free Software Foundation; version 2 of the License.
-*
-*  The GNU General Public License can be found at
-*  http://www.gnu.org/copyleft/gpl.html.
-*
-*  This script is distributed in the hope that it will be useful,
-*  but WITHOUT ANY WARRANTY; without even the implied warranty of
-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*  GNU General Public License for more details.
-*
-*  This copyright notice MUST APPEAR in all copies of the script!
-***************************************************************/
+ *  Copyright notice
+ *
+ *  (c) 2010 Kay Strobach (typo3@kay-strobach.de)
+ *  (c) 2009 Ulrich Wuensche (wuensche@drwuensche.de),
+ *
+ *  All rights reserved
+ *
+ *  This script is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; version 2 of the License.
+ *
+ *  The GNU General Public License can be found at
+ *  http://www.gnu.org/copyleft/gpl.html.
+ *
+ *  This script is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  This copyright notice MUST APPEAR in all copies of the script!
+ ***************************************************************/
 /**
  * Based on B-Net1 Piwik plugin implementation, old piwik plugin and piwik2a
- * Provides Interface to get the new piwiktrackingcode 
- * 
+ * Provides Interface to get the new piwiktrackingcode
+ *
  * Hooks for the 'piwik' extension.
  *
  * @author Ulrich Wuensche <wuensche@drwuensche.de>
@@ -32,48 +32,49 @@
  * @author Kay Strobach <typo3@kay-strobach.de>
  * @author Ingo Pfennigstorf <i.pfennigstorf@gmail.com>
  */
-class tx_Piwik_UserFunc_Footer {
+class Tx_Piwik_UserFunc_Footer {
 	public $cObj;
 	private $tc = array();
+
 	/**
 	 * write piwik javascript right before </body> tag
-	 * JS Documentation on http://piwik.org/docs/javascript-tracking/	 
-	 * 
+	 * JS Documentation on http://piwik.org/docs/javascript-tracking/
+	 *
 	 * Idea piwikTracker.setDownloadClasses( "download" ); should be set to the default download class of TYPO3
-	 * Idea Track TYPO3 404 Errors ... http://piwik.org/faq/how-to/#faq_60	 
+	 * Idea Track TYPO3 404 Errors ... http://piwik.org/faq/how-to/#faq_60
 	 *
 	 * @param string $content
 	 * @param array $conf Plugin configuration
 	 * @return string
 	 */
-	function contentPostProc_output($content, $conf){
+	function contentPostProc_output($content, $conf) {
 		// process the page with these options
 		$conf = $GLOBALS['TSFE']->tmpl->setup['config.']['tx_piwik.'];
 		$beUserLogin = $GLOBALS['TSFE']->beUserLogin;
-		
-			//check wether there is a BE User loggged in, if yes avoid to display the tracking code!
-			//check wether needed parameters are set properly
+
+		//check wether there is a BE User loggged in, if yes avoid to display the tracking code!
+		//check wether needed parameters are set properly
 		if ((!$conf['piwik_idsite']) || (!$conf['piwik_host'])) {
-				//fetch the js template file, makes editing easier ;)
+			//fetch the js template file, makes editing easier ;)
 			$extConf = unserialize($GLOBALS['$TYPO3_CONF_VARS']['EXT']['extConf']['piwik']);
-			if($extConf['showFaultyConfigHelp']) {
+			if ($extConf['showFaultyConfigHelp']) {
 				$template = t3lib_div::getURL(t3lib_extMgm::extPath('piwik') . 'Resources/Private/Templates/Piwik/notracker.html');
 			} else {
 				return '';
 			}
-		} elseif($beUserLogin == 1) {
+		} elseif ($beUserLogin == 1) {
 			$template = t3lib_div::getURL(t3lib_extMgm::extPath('piwik') . 'Resources/Private/Templates/Piwik/notracker_beuser.html');
-		}else {
-				//fetch the js template file, makes editing easier ;)
+		} else {
+			//fetch the js template file, makes editing easier ;)
 			$template = t3lib_div::getURL(t3lib_extMgm::extPath('piwik') . 'Resources/Private/Templates/Piwik/tracker.html');
 		}
-		
-			//make options accessable in the whole class
+
+		//make options accessable in the whole class
 		$this->piwikOptions = $conf;
 
 		$trackingCode = '';
 
-			//build trackingCode
+		//build trackingCode
 		$trackingCode .= $this->getPiwikEnableLinkTracking();
 		$trackingCode .= $this->getPiwikDomains();
 		$trackingCode .= $this->getLinkTrackingTimer();
@@ -86,14 +87,14 @@ class tx_Piwik_UserFunc_Footer {
 		$trackingCode .= $this->getPiwikSetLinkClasses();
 		$trackingCode .= "\t\t" . 'piwikTracker.trackPageView();';
 
-			//replace placeholders
-			//currently the function $this->getPiwikHost() is not called, because of piwikintegration?!
+		//replace placeholders
+		//currently the function $this->getPiwikHost() is not called, because of piwikintegration?!
 		$template = str_replace('###TRACKEROPTIONS###', $trackingCode, $template);
 		$template = str_replace('###HOST###', $this->getPiwikHost(), $template);
 		$template = str_replace('###IDSITE###', $this->getPiwikIDSite(), $template);
 		$template = str_replace('###BEUSER###', $beUserLogin, $template);
 
-			//add complete piwikcode to frontend
+		//add complete piwikcode to frontend
 		return $template;
 	}
 
@@ -146,7 +147,7 @@ class tx_Piwik_UserFunc_Footer {
 	function getPiwikSetDownloadExtensions() {
 		$downloadExtensions = '';
 		if (strlen($this->piwikOptions['setDownloadExtensions'])) {
-			$downloadExtensions =  'piwikTracker.setDownloadExtensions( "' . $this->piwikOptions['setDownloadExtensions'] . '" );' . "\n";
+			$downloadExtensions = 'piwikTracker.setDownloadExtensions( "' . $this->piwikOptions['setDownloadExtensions'] . '" );' . "\n";
 		}
 		return $downloadExtensions;
 	}
@@ -241,7 +242,7 @@ class tx_Piwik_UserFunc_Footer {
 	function getPiwikSetLinkClasses() {
 		$linkClasses = '';
 		if (strlen($this->piwikOptions['setLinkClasses'])) {
-			$linkClasses =  'piwikTracker.setLinkClasses("' . $this->piwikOptions['setLinkClasses'] . '");' . "\n";
+			$linkClasses = 'piwikTracker.setLinkClasses("' . $this->piwikOptions['setLinkClasses'] . '");' . "\n";
 		}
 		return $linkClasses;
 	}
@@ -268,8 +269,8 @@ class tx_Piwik_UserFunc_Footer {
 	}
 }
 
-if (defined("TYPO3_MODE") && $TYPO3_CONF_VARS[TYPO3_MODE]["XCLASS"]["ext/piwik/class.tx_piwik.php"]) {
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]["XCLASS"]["ext/piwik/class.tx_piwik.php"]);
+if (defined("TYPO3_MODE") && $TYPO3_CONF_VARS[TYPO3_MODE]["XCLASS"]["ext/piwik/Classes/UserFunc/Footer.php"]) {
+	include_once($TYPO3_CONF_VARS[TYPO3_MODE]["XCLASS"]["ext/piwik/Classes/UserFunc/Footer.php"]);
 }
 
 ?>
