@@ -3,7 +3,7 @@
 ########################################################################
 # Extension Manager/Repository config file for ext "piwik".
 #
-# Auto generated 04-04-2012 12:25
+# Auto generated 04-04-2012 11:44
 #
 # Manual updates:
 # Only the data in the array - everything else is removed by next
@@ -15,7 +15,7 @@ $EM_CONF[$_EXTKEY] = array(
 	'description' => 'Adds Piwik JS-Code (http://piwik.org/) to your pages',
 	'category' => 'fe',
 	'shy' => 0,
-	'version' => '3.0.1',
+	'version' => '4.0.0',
 	'dependencies' => '',
 	'conflicts' => '',
 	'priority' => '',
@@ -34,7 +34,7 @@ $EM_CONF[$_EXTKEY] = array(
 	'CGLcompliance_note' => '',
 	'constraints' => array(
 		'depends' => array(
-			'typo3' => '4.3.0-4.6.0',
+			'typo3' => '4.3.0-4.7.99',
 		),
 		'conflicts' => array(
 		),
