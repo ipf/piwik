@@ -32,7 +32,7 @@
  * @author Kay Strobach <typo3@kay-strobach.de>
  * @author Ingo Pfennigstorf <i.pfennigstorf@gmail.com>
  */
-class Tx_Piwik_UserFunc_Footer {
+class Tx_Piwik_User_Func_Footer {
 	public $cObj;
 	private $tc = array();
 
@@ -229,7 +229,8 @@ class Tx_Piwik_UserFunc_Footer {
 	function getPiwikSetDownloadClasses() {
 		$downloadClasses = '';
 		if (strlen($this->piwikOptions['setDownloadClasses'])) {
-			$downloadClasses = 'piwikTracker.setDownloadClasses("' . $this->piwikOptions['setDownloadClasses'] . '");' . "\n";
+			$arrDownloadClasses = t3lib_div::trimExplode(',',$this->piwikOptions['setDownloadClasses'],1);
+			$downloadClasses = 'piwikTracker.setDownloadClasses('.json_encode($arrDownloadClasses).');'."\n";
 		}
 		return $downloadClasses;
 	}
@@ -269,8 +270,8 @@ class Tx_Piwik_UserFunc_Footer {
 	}
 }
 
-if (defined("TYPO3_MODE") && $TYPO3_CONF_VARS[TYPO3_MODE]["XCLASS"]["ext/piwik/Classes/UserFunc/Footer.php"]) {
-	include_once($TYPO3_CONF_VARS[TYPO3_MODE]["XCLASS"]["ext/piwik/Classes/UserFunc/Footer.php"]);
+if (defined("TYPO3_MODE") && $TYPO3_CONF_VARS[TYPO3_MODE]["XCLASS"]["ext/piwik/Classes/User/Func/Footer.php"]) {
+	include_once($TYPO3_CONF_VARS[TYPO3_MODE]["XCLASS"]["ext/piwik/Classes/User/Func/Footer.php"]);
 }
 
 ?>

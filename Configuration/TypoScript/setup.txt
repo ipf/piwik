@@ -8,10 +8,10 @@ config.tx_piwik {
 }
 
 page.footerData {
-  854536=COA
-  854536 {
-    20 = USER
-    20.userFunc = Tx_Piwik_UserFunc_Footer->contentPostProc_output
-    20.includeLibs = EXT:piwik/Classes/UserFunc/Footer.php
-  }
+	854536 = COA
+	854536 {
+		20 = USER
+		20.userFunc = Tx_Piwik_User_Func_Footer->contentPostProc_output
+		20.includeLibs = EXT:piwik/Classes/User/Func/Footer.php
+	}
 }
